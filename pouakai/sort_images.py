@@ -8,7 +8,7 @@ from astropy.coordinates import SkyCoord, get_moon
 import astropy.units as u
 from astropy.time import Time
 
-fli_dir = '/home/phys/astro8/MJArchive/octans/'
+fli_dir = '/mnt/whetu_remote/home/phys/astro8/MJArchive/octans/'
 
 def sort_darks(verbose=False,num_core=25):
 	darks = glob(fli_dir + '*/*dark*.fit') 

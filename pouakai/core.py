@@ -488,9 +488,9 @@ class pouakai():
 		real_name = real_save_path + self.base_name + '_wcs'
 
 		if self.field_coord is not None:
-			astrom_call = f"solve-field --no-plots --scale-units arcminwidth --scale-low 24 --scale-high 26 --temp-dir {tmp} -O -o {name} -p --ra {self.field_coord.ra.deg} --dec {self.field_coord.dec.deg} --radius 0.4 {self.red_name}"
+			astrom_call = f"/local/astrometry/bin/solve-field --no-plots --scale-units arcminwidth --scale-low 24 --scale-high 26 --temp-dir {tmp} -O -o {name} -p --ra {self.field_coord.ra.deg} --dec {self.field_coord.dec.deg} --radius 0.4 {self.red_name}"
 		else:
-			astrom_call = f"solve-field --no-plots --scale-units arcminwidth --scale-low 24 --scale-high 26 --temp-dir {tmp} -O -o {name} -p {self.red_name}"
+			astrom_call = f"/local/astrometry/bin/solve-field --no-plots --scale-units arcminwidth --scale-low 24 --scale-high 26 --temp-dir {tmp} -O -o {name} -p {self.red_name}"
 		try:
 			print(astrom_call)
 			#os.system(astrom_call)

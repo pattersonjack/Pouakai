@@ -11,7 +11,7 @@ def split_names(files):
 	return names
 
 
-def make_master_darks(save_location = '/home/phys/astronomy/rri38/fli/data/master/dark/',time_frame=1,num_cores=25,verbose=False):
+def make_master_darks(save_location = '/local/jack/src/Pouakai/output/master/dark/',time_frame=1,num_cores=25,verbose=False):
 	# make save_location an environment variable
 	dark_list = pd.read_csv('cal_lists/dark_list.csv')
 	masters = pd.read_csv('cal_lists/master_dark_list.csv')
@@ -146,7 +146,7 @@ def cut_bad_reductions(table):
 	return tab
 
 
-def make_master_flats(save_location = '/home/phys/astronomy/rri38/fli/data/master/flat/',time_frame=60,num_cores=25, verbose=False):
+def make_master_flats(save_location = '/local/jack/src/Pouakai/output/master/flat/',time_frame=60,num_cores=25, verbose=False):
 	# make save_location an environment variable
 	flat_list = pd.read_csv('cal_lists/flat_list.csv')
 	masters = pd.read_csv('cal_lists/master_flat_list.csv')
@@ -167,8 +167,8 @@ def make_master_flats(save_location = '/home/phys/astronomy/rri38/fli/data/maste
 		new.sort(reverse=True)
 		indexer = np.arange(len(new))
 		entries = Parallel(n_jobs=num_cores)(delayed(flat_processing)(index,new,flat_list,times,time_frame,save_location,verbose) for index in indexer)
-		entries = pd.concat(entries,ignore_index=True)	
-		
+		entries = pd.concat(entries,ignore_index=True)
+
 		masters = pd.concat([masters, entries], ignore_index=True)
 		masters.to_csv('cal_lists/master_flat_list.csv',index=False)
 
@@ -192,7 +192,7 @@ def flat_processing(index,new,flat_list,times,time_frame,save_location,verbose, 
 	darks = []
 	#try:
 	for j in range(len(files)):
-		
+
 		hdu = fits.open(files[j])[0]
 		header = hdu.header
 		#print(header)
@@ -213,18 +213,18 @@ def flat_processing(index,new,flat_list,times,time_frame,save_location,verbose, 
 		if len(failed_rows) > 0:
 			print('image ', files[j], 'has readout error')
 			data = data * np.nan
-		
+
 		else:
 			saturations = (data > 50000).flatten()
 			# if more than 10% of pixels are saturated, set array to nan
 			if sum(saturations) > len(saturations) * 0.1:
 				print('image ', files[j], ' is saturated')
 				data = data * np.nan
-		
+
 		master_arr += [data]
 
 		fname, tdiff = get_master_dark(t, exptimes[j])
-		
+
 		try:
 			darks += [fits.open(fname)[0].data]
 		except:
@@ -237,8 +237,8 @@ def flat_processing(index,new,flat_list,times,time_frame,save_location,verbose, 
 
 	mas = np.nanmean(master_arr,axis=0)
 	std = np.nanstd(master_arr,axis=0)
-	
-	header['JDSTART'] = t 
+
+	header['JDSTART'] = t
 	header['MASTER'] = True
 	phdu = fits.PrimaryHDU(data = mas, header = header)
 	ehdu = fits.ImageHDU(data = std, header = header)
